@@ -1,0 +1,31 @@
+ #need to backup files first
+
+-name: insert sssd.conf 
+  template: src=ssd.conf.j2 dest=/etc/sssd/sssd.conf
+
+- name: insert sssd.conf
+  template: src=krb5.conf.j2 dest=/etc/krb5.conf
+
+- name: insert sssd.conf
+  template: src=smb.conf.j2 dest=/etc/samba/smb.conf
+
+- name: ensure required packages are installed
+  yum: name={{ item }} state=present
+  with_items:
+   - sssd
+   - krb5-workstation
+   - samba-common
+   - authconfig
+   - oddjob-mkhomedir
+
+- name: enabling sssd authentication via authconfig
+  command: authconfig --enablesssd --enablesssdauth --enable
+
+# insert domain join logic here via adcli or net ads - can't find a simple ansible module so need a bit of logic to check if already joined to AD
+# ideally this can be done with a secret encrypted by a password for the join account password
+
+- name: starting required services 
+  service: name={{ item }} state=started enabled=yes
+  with_items: 
+    -sssd
+    -oddjobd

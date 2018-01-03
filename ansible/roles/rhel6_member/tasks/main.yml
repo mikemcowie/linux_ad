@@ -1,0 +1,1 @@
+This should test whether machine is already domain joined and if it is not, should call join.yml
