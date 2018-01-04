@@ -1,5 +1,5 @@
 [rhel6]
-# client6 ansible_host=192.168.204.129
+client6 ansible_host=192.168.204.129
 
 [rhel7]
 client7 ansible_host=192.168.204.99
