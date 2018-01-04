@@ -7,4 +7,5 @@ You need ssh access -preferably by key - with the user specified in the playbook
 
 The servers that it runs on are specified in the hosts file.
 
+Before running this you need to create the computer objects in their desired ous in AD and reset those objects so that the computer password becomes predictable (e.g. scriptable.)
 Invoke it by changing into the main directory , running ansible-playbook -i hosts join.yml 
