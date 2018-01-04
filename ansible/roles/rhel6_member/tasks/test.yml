@@ -1,0 +1,1 @@
+#This should test if the machine is AD joined and if not, call join.yml
