@@ -1,0 +1,32 @@
+#!/bin/bash
+
+yum install -y realmd oddjob oddjob-mkhomedir sssd samba-common-tools
+
+realm join --user=administrator --computer-ou=OU=example example.com
+#To do: test/confirm we can use this to avoid having to use admin password e.g. http://stef.thewalter.net/how-to-join-active-directory-domains.html  
+
+#At this point machine is domain joined, few changes to enable GPOs and not require UPN username follow
+#alternative to GPOs is realm allow and realm deny settings. 
+
+
+#Make default search domain example.com so we can use user.name instead of user.name@example.com]
+#This is messy but will land the line in the [sssd] section where it needs to be.
+sed -i.bak '4i\default_domain_suffix = example.com\' /etc/sssd/sssd.conf
+
+
+# Remove default setting for home directory and set it to a subfolder of a domain folder.
+sed -i '/fallback_homedir/d' /etc/sssd/sssd.conf
+echo "override_homedir = /home/%d/%u >> /etc/sssd/sssd.conf
+
+
+#add further commands to set up GPO based access configuration per sssd-ad man page.
+
+
+
+
+
+#Load changes
+systemctl restart sssd
+
+
+echo "Time to test"

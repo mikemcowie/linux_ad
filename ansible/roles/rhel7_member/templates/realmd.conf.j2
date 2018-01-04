@@ -1,0 +1,16 @@
+#This file contains directives for realmd that will configure sssd, krbb5.conf, samb.conf, etc
+#Empty file indicates default behavior. Need to add a few directives to reflect the manual config that was set for RHEL6
+
+[active-directory]
+default-client = sssd
+os-name = Red Hat Enterprise Linux 7
+
+[service]
+automatic-install = no
+
+[users]
+default-home = /home/%U/%D
+
+[{{dns_domain}}]
+#computer-ou = OU=Linux Computers,DC=domain,DC=example,DC=com
+automatic-join = yes

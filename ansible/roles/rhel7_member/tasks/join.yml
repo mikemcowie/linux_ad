@@ -1,0 +1,49 @@
+- name: ensure required packages are installed
+  yum: name={{ item }} state=present
+  with_items:
+    - realmd
+    - sssd
+    - krb5-workstation
+    - samba-common
+    - authconfig
+    - oddjob
+    - oddjob-mkhomedir
+    - adcli
+ 
+- name: insert realmd.conf to specify non-default configurations that are to be applied.
+  template: src=realmd.conf.j2 dest=/etc/realmd.conf mode=600
+   
+#The below are derived from RHEL6 role, but the commented ones should be taken care of by realmd in RHEL7. 
+#  template: src=sssd.conf.j2 dest=/etc/sssd/sssd.conf backup=yes mode=600
+
+- name: insert krb5.conf
+  template: src=krb5.conf.j2 dest=/etc/krb5.conf backup=yes
+
+#- name: insert smb.conf
+#  template: src=smb.conf.j2 dest=/etc/samba/smb.conf backup=yes
+
+#- name: enabling sssd authentication via authconfig
+#  command: authconfig --enablesssd --enablesssdauth --enablemkhomedir --update
+
+#This depends on the computer account being precreated and having been reset, which makes the computer password the same as the SAMaccount name. 
+#change to equivilent realmd command which takes care of sssd, krb5, smb, adcli ....
+
+
+- name: performing AD join
+  shell: OTP=$(hostname -s) && realm join example.com --membership-software=adcli --one-time-password=$OTP 
+ 
+#Make default search domain example.com so we can use user.name instead of user.name@example.com]
+#This is messy but will land the line in the [sssd] section where it needs to be.
+- name: insert sed script to modify sssd.conf
+  template: src=sed.sh.j2 dest=/root/sed.sh mode=700
+
+#to do to make this more robust: make this dependent on default_domain_suffix not existing.
+- name: modifying sssd.conf
+  shell: /root/sed.sh 
+
+
+- name: starting required services 
+  service: name={{ item }} state=restarted enabled=yes
+  with_items: 
+    - sssd
+    - oddjobd

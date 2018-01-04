@@ -15,6 +15,7 @@
 - name: Join of RHEL7 servers
   hosts: rhel7
   remote_user: admin
+  become: true 
   roles:
     - rhel7_member
 
