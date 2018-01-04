@@ -1,2 +1,4 @@
 dns_domain: example.com
 krb_realm: EXAMPLE.COM
+pdc: dc01
+short_domain: EXAMPLE

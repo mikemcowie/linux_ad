@@ -2,17 +2,16 @@
 debug_level = 2
 config_file_version = 2
 services = nss, pam
-domains = example.com
-#This line allows user to sign in without specifying their full UPN e.g. user.name instead of user.name@example.com
-default_domain_suffix = example.com
+domains = {{dns_domain}}
+default_domain_suffix = {{dns_domain}}
 
 
-[domain/example.com]
+[domain/{{dns_domain}}]
 id_provider = ad
 access_provider = ad
 cache_credentials = true
 ldap_id_mapping = true
 override_homedir = /home/%d/%u
 override_shell = /bin/bash
-#The following setting will allow us to configure login access through a GPO (including console, ssh, su, su -). As of yet still need to test which GPO needs to be set.
+#This line allows us to use GPO based access control.
 ad_gpo_access_control = enforcing

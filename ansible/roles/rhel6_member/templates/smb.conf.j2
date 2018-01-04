@@ -71,7 +71,7 @@
 # Hosts Allow/Hosts Deny lets you restrict who can connect, and you can
 # specifiy it as a per share option as well
 #
-	workgroup = EXAMPLE
+	workgroup = {{short_domain}}
 	server string = Samba Server Version %v
 	
 ;	netbios name = MYSERVER
@@ -126,7 +126,7 @@
 	
 	security = ads
 ;	passdb backend = tdbsam
-	realm = EXAMPLE.COM
+	realm = {{krb_realm}}
 
 ;	password server = <NT-Server-Name>
 

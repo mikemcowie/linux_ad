@@ -4,7 +4,7 @@
  admin_server = FILE:/var/log/kadmind.log
 
 [libdefaults]
- default_realm = EXAMPLE.COM
+ default_realm = {{krb_realm}}
  dns_lookup_realm = false
  dns_lookup_kdc = false
  ticket_lifetime = 24h
@@ -13,11 +13,11 @@
  clockskew = 300
 
 [realms]
-# EXAMPLE.COM = {
-#  kdc = dc01.example.com
-#  admin_server = dc01.example.com
+# {{krb_realm}} = {
+#  kdc = dc01.{{dns_domain}}
+#  admin_server = {{pdc}}.{{dns_domain}}
 # }
 
 [domain_realm]
- .example.com = EXAMPLE.COM
- example.com = EXAMPLE.COM
+ .{{dns_domain}} = {{krb_realm}}
+ {{dns_domain}} = {{krb_realm}}

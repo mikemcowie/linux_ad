@@ -12,10 +12,10 @@
 - name: insert sssd.conf 
   template: src=sssd.conf.j2 dest=/etc/sssd/sssd.conf backup=yes mode=600
 
-- name: insert sssd.conf
+- name: insert krb5.conf
   template: src=krb5.conf.j2 dest=/etc/krb5.conf backup=yes
 
-- name: insert sssd.conf
+- name: insert smb.conf
   template: src=smb.conf.j2 dest=/etc/samba/smb.conf backup=yes
 
 
