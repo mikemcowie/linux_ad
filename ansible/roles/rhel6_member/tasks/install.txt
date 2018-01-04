@@ -1,0 +1,38 @@
+#!/bin/bash
+
+
+
+#Before starting setup /etc/krb5.conf /etc/samba/smb.conf /etc/sssd/sssd.conf 
+
+#backup old files. Need to update [global] section of smb.conf and not overwrite whole file incase samba already in use.
+
+#install prerequisites (comment this out and do in spacewalk instead for prod)
+yum install -y sssd krb5­workstation samba­common authconfig oddjob-mkhomedir
+
+
+#Enable sssd authentication
+authconfig --enablesssd --enablesssdauth --enablemkhomedir
+
+
+#substitute an appropriate AD user who can add machines to domain.
+kinit administrator
+
+#The actual domain join. I got a DNS error on doing this but the server has shown up in DNS on AD server.
+net ads join
+
+service sssd start
+service oddjobd start
+chkconfig sssd on
+chkconfig oddjobd on
+
+
+#At this point with any luck you should be able to sign in with AD account as user.name@example.com
+
+#To do ; adjust sssd.conf (or somewhere else) so that AD user can sign in as user.name without needing to specify domain
+
+#To do ; configure sshd and console logins to specific AD group
+
+#To do ; configure sudoers to specific AD group.
+
+
+
