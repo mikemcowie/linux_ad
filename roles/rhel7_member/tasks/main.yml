@@ -1,2 +1,0 @@
-#This should be reconfigured to hit test.yml first, then test.yml calls join.yml if the test for existing AD membership fails.
-- include: join.yml

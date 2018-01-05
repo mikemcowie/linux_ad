@@ -1,0 +1,67 @@
+ #need to backup files first
+ 
+- name: ensure required packages are installed (RHEL6)
+  yum: name={{ item }} state=present
+  with_items:
+    - sssd
+    - krb5-workstation
+    - samba-common
+    - authconfig
+    - oddjob-mkhomedir
+    - adcli
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "6" )
+    
+- name: ensure required packages are installed (RHEL7)
+  yum: name={{ item }} state=present
+  with_items:
+    - realmd
+    - sssd
+    - krb5-workstation
+    - samba-common
+    - authconfig
+    - oddjob-mkhomedir
+    - adcli
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" )
+    
+- name: insert sssd.conf if realmd is not being used
+  template: src=sssd.conf.j2 dest=/etc/sssd/sssd.conf backup=yes mode=600
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "6" )
+  
+- name: insert realmd.conf if realmd is being used
+  template: src=realmd.conf.j2 dest=/etc/realmd.conf backup=yes mode=600
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" )
+
+- name: insert krb5.conf
+  template: src=krb5.conf.j2 dest=/etc/krb5.conf backup=yes
+
+
+- name: enabling sssd authentication via authconfig if realmd is not being used
+  command: authconfig --enablesssd --enablesssdauth --enablemkhomedir --update
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "6" )
+
+  
+  
+#This depends on the computer account being pre-created and having been reset, which makes the computer password the same as the SAMaccount name. 
+#If we wish we can set up some scripts to run prior to create the computer accounts via adcli
+- name: performing AD join (non realmd systems)
+  shell: OTP=$(hostname -s) && adcli join --one-time-password=$OTP
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "6" )
+  
+- name: performing AD join (realmd systems)
+  shell: OTP=$(hostname -s) && realm join {{dns_domain}} --membership-software=adcli --one-time-password=$OTP 
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" )
+  
+- name: insert sed script to modify sssd.conf
+  template: src=sed.sh.j2 dest=/root/sed.sh mode=700
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" )
+  
+- name: modifying sssd.conf
+  shell: /root/sed.sh
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" )
+
+#To do: turn this into a handler.
+- name: starting required services 
+  service: name={{ item }} state=restarted enabled=yes
+  with_items: 
+    - sssd
+    - oddjobd
