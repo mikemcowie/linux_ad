@@ -1,7 +1,7 @@
 #Note! Create and reset computer accounts in their intended OUs before running this!
 
 - name: Join of RHEl6 servers
-  hosts: rhel6
+  hosts: ad_member
   remote_user: admin
   become: true
   pre_tasks: 
@@ -10,23 +10,23 @@
        with_items:
            - libselinux-python
   roles:
-    - rhel6_member
+    - ad_member
 
-- name: Join of RHEL7 servers
-  hosts: rhel7
-  remote_user: admin
-  become: true 
-  roles:
-    - rhel7_member
+#- name: Join of RHEL7 servers
+#  hosts: rhel7
+#  remote_user: admin
+#  become: true 
+#  roles:
+#   - rhel7_member
 
-- name: Join of SUSE11 servers
-  hosts: suse11
-  remote_user: admin
-  roles:
-    - suse11_member
+#- name: Join of SUSE11 servers
+#  hosts: suse11
+#  remote_user: admin
+#  roles:
+#    - suse11_member
 
-- name: Join of suse12 servers
-  hosts: suse12
-  remote_user: admin
-  roles:
-    - suse12_member
+#- name: Join of suse12 servers
+#  hosts: suse12
+#  remote_user: admin
+#  roles:
+#    - suse12_member
