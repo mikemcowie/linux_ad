@@ -4,11 +4,11 @@
   hosts: ad_member
   remote_user: admin
   become: true
-  pre_tasks: 
-     - name: Installing pre-dependencies 
-       yum: name={{ item }} state=installed
-       with_items:
-           - libselinux-python
+#  pre_tasks: 
+#     - name: Installing pre-dependencies 
+#       yum: name={{ item }} state=installed
+#       with_items:
+#           - libselinux-python
   roles:
     - ad_member
 

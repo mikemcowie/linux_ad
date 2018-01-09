@@ -1,10 +1,7 @@
- #need to backup files first
- 
 - name: ensure required packages are installed (RHEL6)
   yum: name={{ item }} state=present
   with_items:
     - sssd
-    - krb5-workstation
     - samba-common
     - authconfig
     - oddjob-mkhomedir
@@ -15,8 +12,7 @@
   yum: name={{ item }} state=present
   with_items:
     - realmd
-    - sssd
-    - krb5-workstation
+    - sssd:
     - samba-common
     - authconfig
     - oddjob-mkhomedir
@@ -30,10 +26,6 @@
 - name: insert realmd.conf if realmd is being used
   template: src=realmd.conf.j2 dest=/etc/realmd.conf backup=yes mode=600
   when: (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7" )
-
-- name: insert krb5.conf
-  template: src=krb5.conf.j2 dest=/etc/krb5.conf backup=yes
-
 
 - name: enabling sssd authentication via authconfig if realmd is not being used
   command: authconfig --enablesssd --enablesssdauth --enablemkhomedir --update
