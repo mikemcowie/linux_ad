@@ -1,9 +1,16 @@
 #Note! Create and reset computer accounts in their intended OUs before running this!
 
-- name: Join of RHEl6 servers
+- name: Join of defined servers
   hosts: ad_member
   remote_user: admin
   become: true
+  roles:
+    - ad_member
+
+#- name: Join of RHEl6 servers
+#  hosts: ad_member
+#  remote_user: admin
+#  become: true
 #  pre_tasks: 
 #     - name: Installing pre-dependencies 
 #       yum: name={{ item }} state=installed
